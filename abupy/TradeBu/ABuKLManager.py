@@ -165,7 +165,7 @@ class AbuKLManager(object):
                 # 因为在多进程的时候拷贝会丢失name信息
                 kl_pd.name = target_symbol
             return kl_pd
-        # 字典中每找到，进行fetch，获取后保存在择时字典中
+        # 字典中没找到，进行fetch，获取后保存在择时字典中
         kl_pd = self._fetch_pick_time_kl_pd(target_symbol)
         self.pick_kl_pd_dict['pick_time'][target_symbol] = kl_pd
         return kl_pd

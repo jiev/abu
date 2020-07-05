@@ -179,7 +179,7 @@ def _all_futures_cn():
     AbuFuturesCn().symbol获取国内期货symbol代码，注意这里只取连续合约代码
     :return:
     """
-    return AbuFuturesCn().symbol
+    return AbuFuturesCn().symbol   # jieweiwei: 每次生成一个对象，读取文件，性能是否可以优化？还是一般只调用一次？
 
 
 def _all_futures_gb():

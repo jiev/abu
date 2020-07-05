@@ -171,23 +171,24 @@ class AbuPickTimeWorker(AbuPickTimeWorkBase):
 
     def _task_loop(self, today):
         """
-        开始时间驱动，进行日任务，周任务，月任务，
-        如果使用自然周，就会在每个周五进行择时操作
-        自然月在每个月末最后一天进行择时，否则就以
-        天数作为触发条件，这个时候定性任务本身的性质
-        只是以时间跨度作为阀值，触发条件
+        开始时间驱动，进行日任务，周任务，月任务，如果使用自然周，就会在每个周五进行择时操作，自然月在每个月末最后一天进行择时；
+        否则就以天数作为触发条件，这个时候定性任务本身的性质只是以时间跨度作为阀值，触发条件
+
         :param today: 对self.kl_pd apply操作，且axis＝1结果为一天的交易数据
         :return:
         """
         if self.task_pg is not None:
             self.task_pg.show()
 
+        # jieweiwei : key 为 _make_kl_df 中统一设置：df['key'] = list(range(0, len(df)))
         day_cnt = today.key
         # 判断是否执行周任务, 返回结果赋予today对象
         today.exec_week = today.week_task == 1 if g_natural_long_task else day_cnt % 5 == 0
         # 判断是否执行月任务, 返回结果赋予today对象
         today.exec_month = today.month_task == 1 if g_natural_long_task else day_cnt % 20 == 0
 
+        # jieweiwei : 下面的语句存在问题。如果 day_cnt == 0，那么 day_cnt % 5 == 0 必然等于0
+        # jieweiwei : 只有 g_natural_long_task == True ，才会正常执行
         if day_cnt == 0 and not today.exec_week:
             # 如果是择时第一天，且没有执行周任务，需要初始化买入因子专属周任务选股池子
             self._task_attached_ps(today, is_week=True)
@@ -201,7 +202,8 @@ class AbuPickTimeWorker(AbuPickTimeWorkBase):
         if today.exec_week:
             # 执行因子周任务
             self._week_task(today)
-        # 执行择时因子日任务
+
+        # 无论是否长周期，都要执行择时因子日任务
         self._day_task(today)
 
     # noinspection PyTypeChecker
@@ -238,6 +240,7 @@ class AbuPickTimeWorker(AbuPickTimeWorkBase):
                 >>>>
             """
             self.kl_pd['month_task'] = np.where(self.kl_pd.shift(-1)['date'] - self.kl_pd['date'] > 60, 1, 0)
+
         # 通过pandas apply进行交易日递进择时
         self.kl_pd.apply(self._task_loop, axis=1)
 

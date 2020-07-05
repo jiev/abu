@@ -136,7 +136,7 @@ def load_kline_df(symbol_key):
     :param symbol_key: str对象symbol
     :return: (金融时间序列pd.DataFrame对象，索引date_key中start请求日期int，索引date_key中end请求日期int)
     """
-
+    # jieweiwei：从本地读取数据
     """老版本默认的为hdf5，windows用户有hdf5环境问题，改为首先csv"""
     # 初始化默认读取日k数据使用_load_kline_csv方法
     load_kline_func = _load_kline_csv

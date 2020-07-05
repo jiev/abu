@@ -57,7 +57,7 @@ class AbuOrder(object):
         :param factor_object: ABuFactorBuyBases子类实例对象
         """
         kl_pd = factor_object.kl_pd
-        # 要执行买入当天的数据
+        # day_ind 的下一天进行买入
         kl_pd_buy = kl_pd.iloc[day_ind + 1]
         # 买入因子名称
         factor_name = factor_object.factor_name if hasattr(factor_object, 'factor_name') else 'unknown'
@@ -68,9 +68,9 @@ class AbuOrder(object):
         # 初始资金，也可修改策略使用剩余资金
         read_cash = factor_object.capital.read_cash
         # 实例化滑点类
-        fact = slippage_class(kl_pd_buy, factor_name)
+        slippageObj = slippage_class(kl_pd_buy, factor_name)
         # 执行fit_price, 计算决策买入价格
-        bp = fact.fit()
+        bp = slippageObj.fit()
         # 如果滑点类中决定不买入，撤单子，bp就返回正无穷
         if bp < np.inf:
             """
@@ -79,10 +79,10 @@ class AbuOrder(object):
                 如果margin＝2－>ABuPositionBase.g_deposit_rate = 0.5, 即只需要一半的保证金，也可同过构建
                 时使用关键字参数完成保证金比例传递
             """
-            position = position_class(kl_pd_buy, factor_name, factor_object.kl_pd.name, bp, read_cash,
+            positionObj = position_class(kl_pd_buy, factor_name, factor_object.kl_pd.name, bp, read_cash,
                                       **factor_object.position_kwargs)
 
-            market = ABuEnv.g_market_target if ABuMarket.g_use_env_market_set else position.symbol_market
+            market = ABuEnv.g_market_target if ABuMarket.g_use_env_market_set else positionObj.symbol_market
             """
                 由于模块牵扯复杂，暂时不迁移保证金融资相关模块，期货不使用杠杆，即回测不牵扯资金总量的评估
                 if market == EMarketTargetType.E_MARKET_TARGET_FUTURES_CN:
@@ -94,7 +94,7 @@ class AbuOrder(object):
                     position.deposit_rate = deposit_rate
             """
             # 执行fit_position，通过仓位管理计算买入的数量
-            bc = position.fit_position(factor_object)
+            bc = positionObj.fit_position(factor_object)
             if np.isnan(bc):
                 return
 
@@ -155,7 +155,7 @@ class AbuOrder(object):
             # 订单写入买入数量
             self.buy_cnt = buy_cnt
             # 订单写入仓位管理类名称
-            self.buy_pos = position.__class__.__name__
+            self.buy_pos = positionObj.__class__.__name__
             # 订单写入买入类型，call or put
             self.buy_type_str = factor_object.buy_type_str
             # 订单写入买入因子期望方向

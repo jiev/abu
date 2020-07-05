@@ -23,6 +23,7 @@ g_open_down_rate = 0.07
 class AbuSlippageBuyMean(AbuSlippageBuyBase):
     """示例日内滑点均价买入类"""
 
+    # slippage_limit_up 为对涨停板时能否买入做处理，需要时可看下，近期想的策略，倾向于采用不买入涨停的策略。故暂时不看。
     @slippage_limit_up
     def fit_price(self):
         """

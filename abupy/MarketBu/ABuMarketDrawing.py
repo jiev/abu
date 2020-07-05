@@ -248,7 +248,8 @@ def _do_plot_candle(date, p_open, high, low, close, volume, view_index, symbol, 
     # 需要内部import不然每次import abupy都有warning，特别是子进程很烦人
     try:
         # noinspection PyUnresolvedReferences, PyDeprecation
-        import matplotlib.finance as mpf
+        import mplfinance.original_flavor as mpf
+        import matplotlib.dates as mpl_dt
     except ImportError:
         # 2.2 才会有
         # noinspection PyUnresolvedReferences, PyDeprecation
@@ -265,7 +266,7 @@ def _do_plot_candle(date, p_open, high, low, close, volume, view_index, symbol, 
         # 端线图绘制
         qutotes = []
         for index, (d, o, c, l, h) in enumerate(zip(date, p_open, close, low, high)):
-            d = index if minute else mpf.date2num(d)
+            d = index if minute else mpl_dt.date2num(d)
             val = (d, o, c, l, h)
             qutotes.append(val)
         # plot_day_summary_oclh接口，与mpf.candlestick_ochl不同，即数据顺序为开收低高
@@ -274,7 +275,7 @@ def _do_plot_candle(date, p_open, high, low, close, volume, view_index, symbol, 
         # k线图绘制
         qutotes = []
         for index, (d, o, c, h, l) in enumerate(zip(date, p_open, close, high, low)):
-            d = index if minute else mpf.date2num(d)
+            d = index if minute else mpl_dt.date2num(d)
             val = (d, o, c, h, l)
             qutotes.append(val)
         # mpf.candlestick_ochl即数据顺序为开收高低
@@ -305,7 +306,8 @@ def _do_plot_candle(date, p_open, high, low, close, volume, view_index, symbol, 
 
                 # 因为candlestick_ochl 不能label了，所以使用下面的显示文字
                 # noinspection PyUnboundLocalVariable
-                ax2.plot(v, 0, 'ro', markersize=12, markeredgewidth=0.5,
+                valTemp = mpl_dt.date2num(v)
+                ax2.plot(valTemp, 0.0, 'ro', markersize=12, markeredgewidth=0.5,
                          markerfacecolor='None', markeredgecolor=csColor, label=label)
             plt.legend(loc='best')
 

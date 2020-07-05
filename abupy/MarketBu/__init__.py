@@ -4,6 +4,7 @@ from .ABuDataBase import BaseMarket, FuturesBaseMarket, StockBaseMarket, TCBaseM
 from .ABuDataParser import AbuDataParseWrap
 from . import ABuSymbolPd
 from .ABuSymbolPd import get_price
+from .ABuDataSource import kline_pd
 from .ABuSymbol import IndexSymbol, Symbol, code_to_symbol, search_to_symbol_dict
 from . import ABuSymbol
 from ..MarketBu.ABuSymbolStock import AbuSymbolCN, AbuSymbolUS, AbuSymbolHK, query_stock_info

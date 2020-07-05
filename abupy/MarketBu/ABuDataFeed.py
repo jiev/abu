@@ -31,7 +31,7 @@ from ..CoreBu.ABuFixes import xrange, range, filter
 
 """网络请求（连接10秒，接收60秒）超时时间"""
 K_TIME_OUT = (10, 60)
-
+g_tx_fetch_count = 0
 
 def random_from_list(array):
     """从参数array中随机取一个元素"""
@@ -110,7 +110,8 @@ class BDApi(StockBaseMarket, SupportMixin):
         cuid = ABuStrUtil.create_random_with_num_low(40)
         device = random_from_list(StockBaseMarket.K_DEV_MODE_LIST)
         url = BDApi.K_NET_DAY % (cuid, device, str(log_id), str(self._action_id), self._symbol.value)
-        # logging.info(url)
+
+        #logging.info(url)
         next_start = None
         kl_df = None
         if start:
@@ -222,6 +223,11 @@ class TXApi(StockBaseMarket, SupportMixin):
             url = TXApi.K_NET_BASE % (
                 market, self._symbol.value, days,
                 dev_mod, cuid, cuid, cuid_md5, screen[0], screen[1], os_ver, int(random_suffix, 10))
+
+        global g_tx_fetch_count
+        if g_tx_fetch_count % 300 == 0 :
+            logging.info(str(g_tx_fetch_count) + ": " + url)
+        g_tx_fetch_count += 1
 
         data = ABuNetWork.get(url, timeout=K_TIME_OUT)
         if data is not None:

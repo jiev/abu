@@ -124,6 +124,8 @@ def kline_pd(symbol, data_mode, n_folds=2, start=None, end=None, save=True):
             temp_symbol = code_to_symbol(symbol)
         else:
             raise TypeError('symbol must like as "usTSLA" or "TSLA" or Symbol(MType.US, "TSLA")')
+
+
         if ABuEnv.g_private_data_source is None:
             # 如果没有设置私有数据源，使用env中设置的内置示例测试源
             source = source_dict[ABuEnv.g_market_source.value]
@@ -164,7 +166,9 @@ def kline_pd(symbol, data_mode, n_folds=2, start=None, end=None, save=True):
         start = ABuDateUtil.fix_date(start)
         # 标准化输入的end时间，eg 2016-7-26 －> 2016-07-26
         end = ABuDateUtil.fix_date(end)
+
         # 根据n_folds，start，end计算需要请求的start，end
+        # start_int 和 end_int 是实际需要请求的 日期区间 的 int 形式；
         end, end_int, df_end_int, start, start_int, df_start_int = _calc_start_end_date(df, force_local, n_folds, start,
                                                                                         end)
         save_kl_key = (temp_symbol, start_int, end_int)
@@ -177,7 +181,7 @@ def kline_pd(symbol, data_mode, n_folds=2, start=None, end=None, save=True):
         match = False
         if start_int >= df_start_int and end_int <= df_end_int:
             match = True
-        elif start_int >= df_start_int and force_local:
+        elif start_int >= df_start_int and force_local:       # jieweiwei :force_local 模式，match不match 都无所谓。另外这个处理可能存在问题；
             match = True
         elif start_int >= df_req_start and end_int <= df_req_end:
             match = True

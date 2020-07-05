@@ -48,8 +48,8 @@ def calc_commission_cn(trade_cnt, price):
     :return: 计算结果手续费
     """
     cost = trade_cnt * price
-    # 印花税万3，
-    tax = cost * 0.0003
+    # 印花税千1，
+    tax = cost * 0.001
     # 佣金万2.5
     commission = cost * 0.00025
     # 佣金最低5

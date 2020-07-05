@@ -55,7 +55,7 @@ def run_loop_back(read_cash, buy_factors, sell_factors, stock_picks=None, choice
                                           'threshold_price_min': 50.0,
                                           'reversed': False}]
     :param choice_symbols: 备选股票池, 默认为None，即使用abupy.env.g_market_target的市场类型进行全市场回测，
-                           为None的情况下为symbol序列
+                           不为None的情况下为symbol序列
                     eg:
                         choice_symbols = ['usNOAH', 'usSFUN', 'usBIDU', 'usAAPL', 'usGOOG',
                                           'usTSLA', 'usWUBA', 'usVIPS']
@@ -113,10 +113,11 @@ def run_loop_back(read_cash, buy_factors, sell_factors, stock_picks=None, choice
         return None, None
     # kl数据管理类初始化
     kl_pd_manager = AbuKLManager(benchmark, capital)
-    # 批量获取择时kl数据
+
+    # 批量获取择时kl数据（jieweiwei:批量调用 ABuSymbolPd.make_kl_df ，并将结果记录在成员对象中）
     kl_pd_manager.batch_get_pick_time_kl_pd(choice_symbols, n_process=n_process_kl)
 
-    # 在择时之前清理一下输出, 不能wait, windows上一些浏览器会卡死
+    # 在择时之前清理一下程序输出, 不能wait, windows上一些浏览器会卡死 （功能相当于命令行命令 clear ）
     ABuProgress.do_clear_output(wait=False)
 
     # 择时策略运行，多进程方式

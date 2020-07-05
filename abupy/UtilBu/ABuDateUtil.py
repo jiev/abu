@@ -174,7 +174,7 @@ def diff(start_date, end_date, check_order=True):
     :param start_date: str对象或者int对象，如果check_order=True int对象效率最高
     :param end_date: str对象或者int对象，如果check_order=True int对象效率最高
     :param check_order: 是否纠正参数顺序是否放置正常，默认check
-    :return:
+    :return:两个输入日期计算间隔的天数
     """
 
     # 首先进来的date都格式化，主要进行的是fix操作，不管是int还是str，这样20160101转换为2016-01-01日期格式

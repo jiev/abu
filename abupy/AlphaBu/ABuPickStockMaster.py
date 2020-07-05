@@ -60,12 +60,11 @@ class AbuPickStockMaster(object):
             # 根据输入的choice_symbols和要并行的进程数，分配symbol到n_process_pick_stock进程中
             process_symbols = split_k_market(n_process_pick_stock, market_symbols=choice_symbols)
 
-            # 因为切割会有余数，所以将原始设置的进程数切换为分割好的个数, 即32 -> 33 16 -> 17
+            # 因为切割会有余数，所以将原始设置的进程数切换为分割好的个数, 即32 -> 33  、  16 -> 17
             if n_process_pick_stock > 1:
                 n_process_pick_stock = len(process_symbols)
 
-            parallel = Parallel(
-                n_jobs=n_process_pick_stock, verbose=0, pre_dispatch='2*n_jobs')
+            parallel = Parallel(n_jobs=n_process_pick_stock, verbose=0, pre_dispatch='2*n_jobs')
 
             if callback is None:
                 callback = do_pick_stock_work

@@ -322,7 +322,10 @@ class AbuFactorBuyBase(six.with_metaclass(ABCMeta, AbuParamBase)):
 
     @abstractmethod
     def fit_day(self, today):
-        """子类主要需要实现的函数，完成策略因子针对每一个交易日的买入交易策略"""
+        """
+            子类主要需要实现的函数，完成策略因子针对每一个交易日的买入交易策略
+            jieweiwei : 该方法需要返回订单对象 AbuOrder 。
+        """
         pass
 
     def past_today_kl(self, today, past_day_cnt):
@@ -421,7 +424,7 @@ class AbuFactorBuyTD(AbuFactorBuyBase):
 
 
 class AbuFactorBuyXD(AbuFactorBuyBase):
-    """以周期为重要参数的策略，xd代表参数'多少天'如已周期为参数可直接继承使用"""
+    """以周期为重要参数的策略，xd代表参数'多少天'。如已周期为参数可直接继承使用"""
 
     def read_fit_day(self, today):
         """

@@ -47,6 +47,7 @@ def _do_pick_time_work(capital, buy_factors, sell_factors, kl_pd, benchmark, dra
                        show_info=False, show_pg=False):
     """
     内部方法：包装AbuPickTimeWorker进行fit，分配错误码，通过trade_summary生成orders_pd，action_pd
+
     :param capital: AbuCapital实例对象
     :param buy_factors: 买入因子序列
     :param sell_factors: 卖出因子序列
@@ -113,6 +114,8 @@ def do_symbols_with_same_factors(target_symbols, benchmark, buy_factors, sell_fa
                 if func_factors is not None and callable(func_factors):
                     # 针对do_symbols_with_diff_factors mul factors等情况嵌入可变因子
                     p_buy_factors, p_sell_factors = func_factors(target_symbol)
+
+
                 try:
                     kl_pd = kl_pd_manager.get_pick_time_kl_pd(target_symbol)
                     ret, fit_error = _do_pick_time_work(capital, p_buy_factors, p_sell_factors, kl_pd, benchmark,
@@ -127,6 +130,7 @@ def do_symbols_with_same_factors(target_symbols, benchmark, buy_factors, sell_fa
                     if fit_error is not None and fit_error == EFitError.NO_ORDER_GEN:
                         # 没有order生成的要统计进去
                         r_all_fit_symbols_cnt += 1
+
                     while True:
                         if len(back_target_symbols) <= 0:
                             break

@@ -113,6 +113,7 @@ class AbuFactorSellBase(six.with_metaclass(ABCMeta, AbuParamBase)):
         """子类因子针对可扩展参数的初始化"""
         pass
 
+    # fit_day 中，对符合卖出条件的 order 调用 self.sell_tomorrow(order) 或 self.sell_today(order) 即可，不需要返回值；
     @abstractmethod
     def fit_day(self, today, orders):
         """子类主要需要实现的函数，完成策略因子针对每一个交易日的卖出交易策略"""
@@ -123,6 +124,7 @@ class AbuFactorSellBase(six.with_metaclass(ABCMeta, AbuParamBase)):
         """子类需要显视注明自己支持的交易方向"""
         pass
 
+    # order.fit_sell_order 会调用该函数；
     def make_sell_order(self, order, day_ind):
         """
         根据交易发生的时间索引，依次进行：卖出交易时间序列特征生成，
@@ -146,6 +148,7 @@ class AbuFactorSellBase(six.with_metaclass(ABCMeta, AbuParamBase)):
             order.ml_features.update(ml_feature_dict)
         return True
 
+    # ump_manager 根据一些机器学习特征，判断是否屏蔽该笔订单；
     # noinspection PyUnusedLocal
     def make_ump_block_decision(self, ml_feature_dict):
         """

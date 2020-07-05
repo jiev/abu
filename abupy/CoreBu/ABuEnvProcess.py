@@ -12,6 +12,7 @@ import functools
 # noinspection PyUnresolvedReferences
 from ..CoreBu.ABuFixes import filter
 from ..CoreBu.ABuFixes import signature, Parameter
+from ..CoreBu import ABuEnv
 
 __author__ = '阿布'
 __weixin__ = 'abu_quant'
@@ -38,11 +39,13 @@ def add_process_env_sig(func):
                     # 只有windows进行内存设置拷贝
                     env.copy_process_env()
             """
-            # if kwargs['env'] is not None and not ABuEnv.g_is_mac_os:
-            env = kwargs.pop('env', None)
-            if env is not None:
-                # 将主进程中的env拷贝到子进程中
-                env.copy_process_env()
+
+            if kwargs['env'] is not None:
+                env = kwargs.pop('env', None)
+                if not ABuEnv.g_is_mac_os:
+                    if env is not None:
+                        # 将主进程中的env拷贝到子进程中
+                        env.copy_process_env()
         return func(*args, **kwargs)
 
     # 获取原始函数参数签名，给并行方法添加env参数

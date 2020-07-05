@@ -34,6 +34,10 @@ class AbuPickStockWorker(AbuPickStockWorkBase):
         self.capital = capital
         self.benchmark = benchmark
         self.choice_symbols = choice_symbols
+        if self.choice_symbols is None or len(self.choice_symbols) == 0:
+            # 如果参数中初始备选交易对象序列为none, 从对应市场中获取所有的交易对象，详情查阅all_symbol
+            self.choice_symbols = all_symbol()
+
         self.kl_pd_manager = kl_pd_manager
         self.stock_pickers = []
         self.first_stock_pickers = []
@@ -75,9 +79,6 @@ class AbuPickStockWorker(AbuPickStockWorkBase):
                     self.first_stock_pickers.append(picker)
                 else:
                     self.stock_pickers.append(picker)
-        if self.choice_symbols is None or len(self.choice_symbols) == 0:
-            # 如果参数中初始备选交易对象序列为none, 从对应市场中获取所有的交易对象，详情查阅all_symbol
-            self.choice_symbols = all_symbol()
 
     def fit(self):
         """
